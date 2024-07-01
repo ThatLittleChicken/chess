@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Arrays;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -8,8 +10,25 @@ package chess;
  */
 public class ChessBoard {
 
+    private ChessPiece[][] board = new ChessPiece[8][8];
+
     public ChessBoard() {
-        
+        for (int i = 0; i < 2; i++) {
+            int row = i * 7;
+            ChessGame.TeamColor color = i == 0 ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            board[row][0] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+            board[row][1] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+            board[row][2] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+            board[row][3] = new ChessPiece(color, ChessPiece.PieceType.QUEEN);
+            board[row][4] = new ChessPiece(color, ChessPiece.PieceType.KING);
+            board[row][5] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+            board[row][6] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+            board[row][7] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+        }
+        for (int i = 0; i < 8; i++) {
+            board[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            board[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        }
     }
 
     /**
@@ -19,7 +38,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        board[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -30,7 +49,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return board[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -38,6 +57,19 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        new ChessBoard();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Arrays.deepEquals(board, that.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(board);
     }
 }
