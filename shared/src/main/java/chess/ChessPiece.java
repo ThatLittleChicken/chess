@@ -1,5 +1,7 @@
 package chess;
 
+import chess.PieceMoves.*;
+
 import java.util.Collection;
 import java.util.Objects;
 
@@ -53,7 +55,22 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        switch (type) {
+            case KING:
+                return new KingMove(this, board, myPosition).pieceMove(board, myPosition);
+            case QUEEN:
+                return new QueenMove(this, board, myPosition).pieceMove(board, myPosition);
+            case BISHOP:
+                return new BishopMove(this, board, myPosition).pieceMove(board, myPosition);
+            case KNIGHT:
+                return new KnightMove(this, board, myPosition).pieceMove(board, myPosition);
+            case ROOK:
+                return new RookMove(this, board, myPosition).pieceMove(board, myPosition);
+            case PAWN:
+                return new PawnMove(this, board, myPosition).pieceMove(board, myPosition);
+            default:
+                return null;
+        }
     }
 
     @Override
