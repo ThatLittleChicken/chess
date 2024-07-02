@@ -10,25 +10,10 @@ import java.util.Arrays;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] board = new ChessPiece[8][8];
+    private ChessPiece[][] board;
 
     public ChessBoard() {
-        for (int i = 0; i < 2; i++) {
-            int row = i * 7;
-            ChessGame.TeamColor color = i == 0 ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
-            board[row][0] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
-            board[row][1] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
-            board[row][2] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
-            board[row][3] = new ChessPiece(color, ChessPiece.PieceType.QUEEN);
-            board[row][4] = new ChessPiece(color, ChessPiece.PieceType.KING);
-            board[row][5] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
-            board[row][6] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
-            board[row][7] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
-        }
-        for (int i = 0; i < 8; i++) {
-            board[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-            board[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
-        }
+        board = new ChessPiece[8][8];
     }
 
     /**
@@ -58,6 +43,22 @@ public class ChessBoard {
      */
     public void resetBoard() {
         new ChessBoard();
+        for (int i = 0; i < 2; i++) {
+            int row = i * 7;
+            ChessGame.TeamColor color = i == 0 ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            board[row][0] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+            board[row][1] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+            board[row][2] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+            board[row][3] = new ChessPiece(color, ChessPiece.PieceType.QUEEN);
+            board[row][4] = new ChessPiece(color, ChessPiece.PieceType.KING);
+            board[row][5] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+            board[row][6] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+            board[row][7] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+        }
+        for (int i = 0; i < 8; i++) {
+            board[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            board[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        }
     }
 
     @Override
