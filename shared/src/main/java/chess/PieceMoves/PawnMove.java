@@ -1,90 +1,70 @@
 package chess.PieceMoves;
 
-import chess.*;
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 
 import java.util.HashSet;
 
 public class PawnMove extends PieceMove {
-    public PawnMove(ChessPiece piece, ChessBoard board, ChessPosition myPosition) {
-        super(piece, board, myPosition);
-    }
-
-    private void promotionMoves(int row, int col) {
-        moves.add(new ChessMove(myPosition, new ChessPosition(row, col), ChessPiece.PieceType.QUEEN));
-        moves.add(new ChessMove(myPosition, new ChessPosition(row, col), ChessPiece.PieceType.ROOK));
-        moves.add(new ChessMove(myPosition, new ChessPosition(row, col), ChessPiece.PieceType.BISHOP));
-        moves.add(new ChessMove(myPosition, new ChessPosition(row, col), ChessPiece.PieceType.KNIGHT));
+    public PawnMove(ChessGame.TeamColor myColor, ChessBoard board, ChessPosition myPos) {
+        super(myColor, board, myPos);
     }
 
     @Override
-    public HashSet<ChessMove> pieceMove(ChessBoard board, ChessPosition myPosition) {
-        int row = myPosition.getRow();
-        int col = myPosition.getColumn();
-        //pawn moves if the position is empty
-        if (myColor == ChessGame.TeamColor.WHITE) {
-            //white
-            //up
+    public HashSet<ChessMove> pieceMove() {
+        int row = myPos.getRow();
+        int col = myPos.getColumn();
+
+        if (myColor == ChessGame.TeamColor.WHITE){
             if (row + 1 <= 8 && isEmpty(row + 1, col)) {
                 if (row + 1 == 8) {
-                    //promotion
-                    promotionMoves(row + 1, col);
+                    addPromotionMoves(row + 1, col);
                 } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col), null));
+                    addMoves(row + 1, col);
                 }
             }
-            //up two
             if (row == 2 && isEmpty(row + 1, col) && isEmpty(row + 2, col)) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col), null));
+                addMoves(row + 2, col);
             }
-            //up left
-            if (row + 1 <= 8 && col - 1 >= 1 && isEnemy(row + 1, col - 1)) {
-                if (row + 1 == 8) {
-                    //promotion
-                    promotionMoves(row + 1, col - 1);
-                } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col - 1), null));
-                }
-            }
-            //up right
             if (row + 1 <= 8 && col + 1 <= 8 && isEnemy(row + 1, col + 1)) {
                 if (row + 1 == 8) {
-                    //promotion
-                    promotionMoves(row + 1, col + 1);
+                    addPromotionMoves(row + 1, col + 1);
                 } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col + 1), null));
+                    addMoves(row + 1, col + 1);
+                }
+            }
+            if (row + 1 <= 8 && col - 1 >= 1 && isEnemy(row + 1, col - 1)) {
+                if (row + 1 == 8) {
+                    addPromotionMoves(row + 1, col - 1);
+                } else {
+                    addMoves(row + 1, col - 1);
                 }
             }
         } else {
-            //black
-            //down
             if (row - 1 >= 1 && isEmpty(row - 1, col)) {
                 if (row - 1 == 1) {
-                    //promotion
-                    promotionMoves(row - 1, col);
+                    addPromotionMoves(row - 1, col);
                 } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row - 1, col), null));
+                    addMoves(row - 1, col);
                 }
             }
-            //down two
             if (row == 7 && isEmpty(row - 1, col) && isEmpty(row - 2, col)) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(row - 2, col), null));
+                addMoves(row - 2, col);
             }
-            //down left
             if (row - 1 >= 1 && col - 1 >= 1 && isEnemy(row - 1, col - 1)) {
                 if (row - 1 == 1) {
-                    //promotion
-                    promotionMoves(row - 1, col - 1);
+                    addPromotionMoves(row - 1, col - 1);
                 } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row - 1, col - 1), null));
+                    addMoves(row - 1, col - 1);
                 }
             }
-            //down right
             if (row - 1 >= 1 && col + 1 <= 8 && isEnemy(row - 1, col + 1)) {
                 if (row - 1 == 1) {
-                    //promotion
-                    promotionMoves(row - 1, col + 1);
+                    addPromotionMoves(row - 1, col + 1);
                 } else {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(row - 1, col + 1), null));
+                    addMoves(row - 1, col + 1);
                 }
             }
         }

@@ -7,19 +7,18 @@ import java.util.HashSet;
 public abstract class PieceMove {
 
     protected ChessBoard board;
-    protected ChessPosition myPosition;
-    protected ChessPiece.PieceType myType;
     protected ChessGame.TeamColor myColor;
-    protected HashSet<ChessMove> moves = new HashSet<>();
+    protected ChessPosition myPos;
+    protected HashSet<ChessMove> moves;
 
-    public PieceMove(ChessPiece piece, ChessBoard board, ChessPosition myPosition) {
-        this.myType = piece.getPieceType();
-        this.myColor = piece.getTeamColor();
+    public PieceMove(ChessGame.TeamColor myColor, ChessBoard board, ChessPosition myPos) {
         this.board = board;
-        this.myPosition = myPosition;
+        this.myColor = myColor;
+        this.myPos = myPos;
+        moves = new HashSet<>();
     }
 
-    public abstract HashSet<ChessMove> pieceMove(ChessBoard board, ChessPosition myPosition);
+    public abstract HashSet<ChessMove> pieceMove();
 
     public boolean isValidPos(int row, int col) {
         return (board.getPiece(new ChessPosition(row, col)) == null || board.getPiece(new ChessPosition(row, col)).getTeamColor() != myColor);
@@ -31,5 +30,16 @@ public abstract class PieceMove {
 
     public boolean isEmpty(int row, int col) {
         return board.getPiece(new ChessPosition(row, col)) == null;
+    }
+
+    public void addMoves(int row, int col) {
+        moves.add(new ChessMove(myPos, new ChessPosition(row, col), null));
+    }
+
+    public void addPromotionMoves(int row, int col) {
+        moves.add(new ChessMove(myPos, new ChessPosition(row, col), ChessPiece.PieceType.BISHOP));
+        moves.add(new ChessMove(myPos, new ChessPosition(row, col), ChessPiece.PieceType.KNIGHT));
+        moves.add(new ChessMove(myPos, new ChessPosition(row, col), ChessPiece.PieceType.ROOK));
+        moves.add(new ChessMove(myPos, new ChessPosition(row, col), ChessPiece.PieceType.QUEEN));
     }
 }

@@ -57,17 +57,17 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         switch (type) {
             case KING:
-                return new KingMove(this, board, myPosition).pieceMove(board, myPosition);
+                return new KingMove(pieceColor, board, myPosition).pieceMove();
             case QUEEN:
-                return new QueenMove(this, board, myPosition).pieceMove(board, myPosition);
+                return new QueenMove(pieceColor, board, myPosition).pieceMove();
             case BISHOP:
-                return new BishopMove(this, board, myPosition).pieceMove(board, myPosition);
+                return new BishopMove(pieceColor, board, myPosition).pieceMove();
             case KNIGHT:
-                return new KnightMove(this, board, myPosition).pieceMove(board, myPosition);
+                return new KnightMove(pieceColor, board, myPosition).pieceMove();
             case ROOK:
-                return new RookMove(this, board, myPosition).pieceMove(board, myPosition);
+                return new RookMove(pieceColor, board, myPosition).pieceMove();
             case PAWN:
-                return new PawnMove(this, board, myPosition).pieceMove(board, myPosition);
+                return new PawnMove(pieceColor, board, myPosition).pieceMove();
             default:
                 return null;
         }

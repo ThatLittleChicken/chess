@@ -1,53 +1,46 @@
 package chess.PieceMoves;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessMove;
-import chess.ChessPiece;
 import chess.ChessPosition;
 
 import java.util.HashSet;
 
 public class KnightMove extends PieceMove {
-    public KnightMove(ChessPiece piece, ChessBoard board, ChessPosition myPosition) {
-        super(piece, board, myPosition);
+
+    public KnightMove(ChessGame.TeamColor myColor, ChessBoard board, ChessPosition myPos) {
+        super(myColor, board, myPos);
     }
 
     @Override
-    public HashSet<ChessMove> pieceMove(ChessBoard board, ChessPosition myPosition) {
-        int row = myPosition.getRow();
-        int col = myPosition.getColumn();
-        //knight moves if the position is empty
-        //up left
-        if (row + 2 <= 8 && col - 1 >= 1 && isValidPos(row + 2, col - 1)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col - 1), null));
-        }
-        //up right
+    public HashSet<ChessMove> pieceMove() {
+        int row = myPos.getRow();
+        int col = myPos.getColumn();
+
         if (row + 2 <= 8 && col + 1 <= 8 && isValidPos(row + 2, col + 1)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col + 1), null));
+            addMoves(row + 2, col + 1);
         }
-        //up mid left
-        if (row + 1 <= 8 && col - 2 >= 1 && isValidPos(row + 1, col - 2)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col - 2), null));
+        if (row + 2 <= 8 && col - 1 >= 1 && isValidPos(row + 2, col - 1)) {
+            addMoves(row + 2, col - 1);
         }
-        //up mid right
         if (row + 1 <= 8 && col + 2 <= 8 && isValidPos(row + 1, col + 2)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col + 2), null));
+            addMoves(row + 1, col + 2);
         }
-        //down mid left
-        if (row - 1 >= 1 && col - 2 >= 1 && isValidPos(row - 1, col - 2)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(row - 1, col - 2), null));
+        if (row + 1 <= 8 && col - 2 >= 1 && isValidPos(row + 1, col - 2)) {
+            addMoves(row + 1, col - 2);
         }
-        //down mid right
         if (row - 1 >= 1 && col + 2 <= 8 && isValidPos(row - 1, col + 2)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(row - 1, col + 2), null));
+            addMoves(row - 1, col + 2);
         }
-        //down left
-        if (row - 2 >= 1 && col - 1 >= 1 && isValidPos(row - 2, col - 1)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(row - 2, col - 1), null));
+        if (row - 1 >= 1 && col - 2 >= 1 && isValidPos(row - 1, col - 2)) {
+            addMoves(row - 1, col - 2);
         }
-        //down right
         if (row - 2 >= 1 && col + 1 <= 8 && isValidPos(row - 2, col + 1)) {
-            moves.add(new ChessMove(myPosition, new ChessPosition(row - 2, col + 1), null));
+            addMoves(row - 2, col + 1);
+        }
+        if (row - 2 >= 1 && col - 1 >= 1 && isValidPos(row - 2, col - 1)) {
+            addMoves(row - 2, col - 1);
         }
 
         return moves;
