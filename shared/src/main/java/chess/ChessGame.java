@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -13,11 +14,15 @@ public class ChessGame {
 
     private ChessBoard board;
     private TeamColor teamTurn;
+    private ArrayList<ChessMove> previousMoves;
+    private ChessPiece enPassantPiece;
+
 
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
         teamTurn = TeamColor.WHITE;
+        previousMoves = new ArrayList<>();
     }
 
     /**
@@ -82,9 +87,14 @@ public class ChessGame {
                         }
                     }
                 }
-                if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() != getTeamTurn() &&
+                if (piece.getPieceType() == ChessPiece.PieceType.PAWN &&
+                        board.getPiece(new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn())) != null &&
+                        board.getPiece(new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn())) != piece &&
                         board.getPiece(new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn())).getPieceType() == ChessPiece.PieceType.PAWN) {
-                    continue;
+                    if (previousMoves.size() > 1 &&
+                            !previousMoves.get(previousMoves.size() - 2).getEndPosition().equals(move.getStartPosition())) {
+                        continue;
+                    }
                 }
                 if (move.getPromotionPiece() != null) {
                     promotionPiece = new ChessPiece(teamColor, move.getPromotionPiece());
@@ -141,6 +151,8 @@ public class ChessGame {
             }
             board.getPiece(move.getEndPosition()).setPreviousMove(move);
         }
+
+        previousMoves.add(move);
 
         if (getTeamTurn() == TeamColor.WHITE) {
             setTeamTurn(TeamColor.BLACK);
