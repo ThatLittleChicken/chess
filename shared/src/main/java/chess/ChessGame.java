@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -16,6 +17,7 @@ public class ChessGame {
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
+        teamTurn = TeamColor.WHITE;
     }
 
     /**
@@ -42,6 +44,31 @@ public class ChessGame {
         BLACK
     }
 
+    public Collection<ChessMove> validMoves(ChessPosition startPosition, TeamColor teamColor) {
+        if (board.getPiece(startPosition) != null && board.getPiece(startPosition).getTeamColor() == teamColor) {
+            Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+            Collection<ChessMove> validMoves = new HashSet<>();
+            for (ChessMove move : moves) {
+                ChessPiece piece = board.getPiece(startPosition);
+                ChessPiece promotionPiece = board.getPiece(startPosition);
+                ChessPiece temp = board.getPiece(move.getEndPosition());
+                if (move.getPromotionPiece() != null) {
+                    promotionPiece = new ChessPiece(teamColor, move.getPromotionPiece());
+                }
+                board.addPiece(move.getEndPosition(), promotionPiece);
+                board.addPiece(startPosition, null);
+                if (!isInCheck(teamColor)) {
+                    validMoves.add(move);
+                }
+                board.addPiece(startPosition, piece);
+                board.addPiece(move.getEndPosition(), temp);
+            }
+            return validMoves;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -50,12 +77,10 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (isInCheckmate(getTeamTurn()) || isInStalemate(getTeamTurn())) {
+        if (board.getPiece(startPosition) == null) {
             return null;
-        } else if (isInCheck(getTeamTurn())) {
-            throw new RuntimeException("Not implemented");
         } else {
-            return board.getPiece(startPosition).pieceMoves(board, startPosition);
+            return validMoves(startPosition, board.getPiece(startPosition).getTeamColor());
         }
     }
 
@@ -66,7 +91,8 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (!validMoves(move.getStartPosition()).contains(move)) {
+        if (validMoves(move.getStartPosition()) == null || !validMoves(move.getStartPosition()).contains(move) ||
+                board.getPiece(move.getStartPosition()).getTeamColor() != getTeamTurn()) {
             throw new InvalidMoveException("Invalid move");
         } else {
             if (move.getPromotionPiece() == null) {
@@ -76,6 +102,12 @@ public class ChessGame {
                 board.addPiece(move.getEndPosition(), new ChessPiece(getTeamTurn(), move.getPromotionPiece()));
                 board.addPiece(move.getStartPosition(), null);
             }
+        }
+
+        if (getTeamTurn() == TeamColor.WHITE) {
+            setTeamTurn(TeamColor.BLACK);
+        } else {
+            setTeamTurn(TeamColor.WHITE);
         }
     }
 
