@@ -82,6 +82,10 @@ public class ChessGame {
                         }
                     }
                 }
+                if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() != getTeamTurn() &&
+                        board.getPiece(new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn())).getPieceType() == ChessPiece.PieceType.PAWN) {
+                    continue;
+                }
                 if (move.getPromotionPiece() != null) {
                     promotionPiece = new ChessPiece(teamColor, move.getPromotionPiece());
                 }
@@ -110,13 +114,14 @@ public class ChessGame {
                 board.getPiece(move.getStartPosition()).getTeamColor() != getTeamTurn()) {
             throw new InvalidMoveException("Invalid move");
         } else {
-            if (move.getStartPosition().getColumn() == 5 && move.getEndPosition().getColumn() == 3) {
+            ChessPiece.PieceType pieceType = board.getPiece(move.getStartPosition()).getPieceType();
+            if (pieceType == ChessPiece.PieceType.KING && move.getStartPosition().getColumn() == 5 && move.getEndPosition().getColumn() == 3) {
                 ChessPiece rook = board.getPiece(new ChessPosition(move.getStartPosition().getRow(), 1));
                 board.addPiece(new ChessPosition(move.getStartPosition().getRow(), 4), rook);
                 board.addPiece(new ChessPosition(move.getStartPosition().getRow(), 1), null);
                 board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
                 board.addPiece(move.getStartPosition(), null);
-            } else if (move.getStartPosition().getColumn() == 5 && move.getEndPosition().getColumn() == 7) {
+            } else if (pieceType == ChessPiece.PieceType.KING && move.getStartPosition().getColumn() == 5 && move.getEndPosition().getColumn() == 7) {
                 ChessPiece rook = board.getPiece(new ChessPosition(move.getStartPosition().getRow(), 8));
                 board.addPiece(new ChessPosition(move.getStartPosition().getRow(), 6), rook);
                 board.addPiece(new ChessPosition(move.getStartPosition().getRow(), 8), null);
@@ -125,6 +130,11 @@ public class ChessGame {
             } else if (move.getPromotionPiece() != null) {
                 board.addPiece(move.getEndPosition(), new ChessPiece(getTeamTurn(), move.getPromotionPiece()));
                 board.addPiece(move.getStartPosition(), null);
+            } else if (pieceType == ChessPiece.PieceType.PAWN &&
+                    board.getPiece(new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn())).getPieceType() == ChessPiece.PieceType.PAWN) {
+                board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+                board.addPiece(move.getStartPosition(), null);
+                board.addPiece(new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn()), null);
             } else {
                 board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
                 board.addPiece(move.getStartPosition(), null);
