@@ -1,15 +1,12 @@
 package chess.PieceMoves;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
+import chess.*;
 
 import java.util.HashSet;
 
 public class PawnMove extends PieceMove {
-    public PawnMove(ChessGame.TeamColor myColor, ChessBoard board, ChessPosition myPos) {
-        super(myColor, board, myPos);
+    public PawnMove(ChessPiece piece, ChessBoard board, ChessPosition myPos) {
+        super(piece, board, myPos);
     }
 
     @Override

@@ -1,16 +1,13 @@
 package chess.PieceMoves;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
+import chess.*;
 
 import java.util.HashSet;
 
 public class BishopMove extends PieceMove {
 
-    public BishopMove(ChessGame.TeamColor myColor, ChessBoard board, ChessPosition myPos) {
-        super(myColor, board, myPos);
+    public BishopMove(ChessPiece piece, ChessBoard board, ChessPosition myPos) {
+        super(piece, board, myPos);
     }
 
     @Override

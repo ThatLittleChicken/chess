@@ -15,10 +15,12 @@ public class ChessPiece {
 
     private ChessGame.TeamColor pieceColor;
     private PieceType type;
+    private ChessMove previousMove;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
+        previousMove = null;
     }
 
     /**
@@ -57,20 +59,28 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         switch (type) {
             case KING:
-                return new KingMove(pieceColor, board, myPosition).pieceMove();
+                return new KingMove(this, board, myPosition).pieceMove();
             case QUEEN:
-                return new QueenMove(pieceColor, board, myPosition).pieceMove();
+                return new QueenMove(this, board, myPosition).pieceMove();
             case BISHOP:
-                return new BishopMove(pieceColor, board, myPosition).pieceMove();
+                return new BishopMove(this, board, myPosition).pieceMove();
             case KNIGHT:
-                return new KnightMove(pieceColor, board, myPosition).pieceMove();
+                return new KnightMove(this, board, myPosition).pieceMove();
             case ROOK:
-                return new RookMove(pieceColor, board, myPosition).pieceMove();
+                return new RookMove(this, board, myPosition).pieceMove();
             case PAWN:
-                return new PawnMove(pieceColor, board, myPosition).pieceMove();
+                return new PawnMove(this, board, myPosition).pieceMove();
             default:
                 return null;
         }
+    }
+
+    public ChessMove getPreviousMove() {
+        return previousMove;
+    }
+
+    public void setPreviousMove(ChessMove move) {
+        previousMove = move;
     }
 
     @Override

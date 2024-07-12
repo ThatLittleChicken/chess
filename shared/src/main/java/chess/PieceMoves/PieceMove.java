@@ -9,12 +9,14 @@ public abstract class PieceMove {
     protected ChessBoard board;
     protected ChessGame.TeamColor myColor;
     protected ChessPosition myPos;
+    protected ChessMove previousMove;
     protected HashSet<ChessMove> moves;
 
-    public PieceMove(ChessGame.TeamColor myColor, ChessBoard board, ChessPosition myPos) {
+    public PieceMove(ChessPiece piece, ChessBoard board, ChessPosition myPos) {
         this.board = board;
-        this.myColor = myColor;
+        this.myColor = piece.getTeamColor();
         this.myPos = myPos;
+        this.previousMove = piece.getPreviousMove();
         moves = new HashSet<>();
     }
 

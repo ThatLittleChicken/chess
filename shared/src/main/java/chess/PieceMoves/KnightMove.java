@@ -1,16 +1,13 @@
 package chess.PieceMoves;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
+import chess.*;
 
 import java.util.HashSet;
 
 public class KnightMove extends PieceMove {
 
-    public KnightMove(ChessGame.TeamColor myColor, ChessBoard board, ChessPosition myPos) {
-        super(myColor, board, myPos);
+    public KnightMove(ChessPiece piece, ChessBoard board, ChessPosition myPos) {
+        super(piece, board, myPos);
     }
 
     @Override
