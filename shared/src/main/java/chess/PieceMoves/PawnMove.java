@@ -39,16 +39,6 @@ public class PawnMove extends PieceMove {
                     addMoves(row + 1, col - 1);
                 }
             }
-            if (row + 1 == 6 && col + 1 <= 8 && board.getPiece(new ChessPosition(5, col + 1)) != null &&
-                    board.getPiece(new ChessPosition(5, col + 1)).getPreviousMove()
-                            .getStartPosition().equals(new ChessPosition(7, col + 1))) {
-                addMoves(row + 1, col + 1);
-            }
-            if (row + 1 == 6 && col - 1 >= 1 && board.getPiece(new ChessPosition(5, col - 1)) != null &&
-                    board.getPiece(new ChessPosition(5, col - 1)).getPreviousMove()
-                            .getStartPosition().equals(new ChessPosition(7, col - 1))) {
-                addMoves(row + 1, col - 1);
-            }
         } else {
             if (row - 1 >= 1 && isEmpty(row - 1, col)) {
                 if (row - 1 == 1) {
@@ -73,16 +63,6 @@ public class PawnMove extends PieceMove {
                 } else {
                     addMoves(row - 1, col + 1);
                 }
-            }
-            if (row - 1 == 3 && col + 1 <= 8 && board.getPiece(new ChessPosition(4, col + 1)) != null &&
-                    board.getPiece(new ChessPosition(4, col + 1)).getPreviousMove()
-                            .getStartPosition().equals(new ChessPosition(2, col + 1))) {
-                addMoves(row - 1, col + 1);
-            }
-            if (row - 1 == 3 && col - 1 >= 1 && board.getPiece(new ChessPosition(4, col - 1)) != null &&
-                    board.getPiece(new ChessPosition(4, col - 1)).getPreviousMove()
-                            .getStartPosition().equals(new ChessPosition(2, col - 1))) {
-                addMoves(row - 1, col - 1);
             }
         }
 

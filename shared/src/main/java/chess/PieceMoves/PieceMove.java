@@ -16,7 +16,6 @@ public abstract class PieceMove {
         this.board = board;
         this.myColor = piece.getTeamColor();
         this.myPos = myPos;
-        this.previousMove = piece.getPreviousMove();
         moves = new HashSet<>();
     }
 

@@ -40,26 +40,6 @@ public class KingMove extends PieceMove {
             addMoves(row - 1, col - 1);
         }
 
-        if (previousMove == null) {
-            if (row == 1 || row == 8) {
-                if (board.getPiece(new ChessPosition(row, 2)) == null &&
-                        board.getPiece(new ChessPosition(row, 3)) == null &&
-                        board.getPiece(new ChessPosition(row, 4)) == null) {
-                    ChessPiece rook = board.getPiece(new ChessPosition(row, 1));
-                    if (rook != null && rook.getPreviousMove() == null) {
-                        addMoves(row, 3);
-                    }
-                }
-                if (board.getPiece(new ChessPosition(row, 6)) == null &&
-                        board.getPiece(new ChessPosition(row, 7)) == null) {
-                    ChessPiece rook = board.getPiece(new ChessPosition(row, 8));
-                    if (rook != null && rook.getPreviousMove() == null) {
-                        addMoves(row, 7);
-                    }
-                }
-            }
-        }
-
         return moves;
     }
 

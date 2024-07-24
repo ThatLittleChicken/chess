@@ -15,12 +15,10 @@ public class ChessPiece {
 
     private ChessGame.TeamColor pieceColor;
     private PieceType type;
-    private ChessMove previousMove;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
-        previousMove = null;
     }
 
     /**
@@ -73,14 +71,6 @@ public class ChessPiece {
             default:
                 return null;
         }
-    }
-
-    public ChessMove getPreviousMove() {
-        return previousMove;
-    }
-
-    public void setPreviousMove(ChessMove move) {
-        previousMove = move;
     }
 
     @Override
