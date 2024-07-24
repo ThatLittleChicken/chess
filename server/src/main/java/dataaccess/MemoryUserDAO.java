@@ -19,8 +19,4 @@ public class MemoryUserDAO implements UserDAO {
     public UserData getUser(String username) throws DataAccessException {
         return users.get(username);
     }
-
-    public void updateUser(String username, UserData user) throws DataAccessException {
-        users.put(username, user);
-    }
 }
