@@ -17,7 +17,8 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest req, String authToken) throws DataAccessException {
-        if (req.username() == null || req.username().isEmpty() || req.password() == null || req.password().isEmpty()) {
+        if (req.username() == null || req.username().isEmpty() || req.password() == null || req.password().isEmpty() ||
+            req.email() == null || req.email().isEmpty()) {
             throw new DataAccessException("Error: bad request");
         }
         if (userDAO.getUser(req.username()) != null) {
