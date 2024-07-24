@@ -1,9 +1,12 @@
 package server;
 
+import com.google.gson.Gson;
 import service.AuthService;
 import service.GameService;
 import service.UserService;
 import spark.*;
+
+import java.util.Map;
 
 public class Server {
     private AuthService authService;
@@ -31,7 +34,7 @@ public class Server {
         Spark.delete("/db", this::clearAll);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
+        //Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -46,7 +49,8 @@ public class Server {
             return "";
         } catch (Exception e) {
             res.status(500);
-            return e.getMessage();
+            res.type("application/json");
+            return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage()), "success", false));
         }
     }
 
