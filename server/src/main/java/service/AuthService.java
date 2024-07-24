@@ -14,6 +14,12 @@ public class AuthService {
     }
 
     public AuthData getAuth(String token) throws DataAccessException {
+        if (token == null || token.isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
+        if (authDAO.getAuth(token) == null || authDAO.getAuth(token).username().isEmpty()) {
+            throw new DataAccessException("Error: unauthorized");
+        }
         return authDAO.getAuth(token);
     }
 
