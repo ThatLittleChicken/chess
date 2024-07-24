@@ -24,12 +24,21 @@ public class AuthService {
     }
 
     public AuthData createAuth(String username) throws DataAccessException {
+        if (username == null || username.isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
         AuthData authData = new AuthData(UUID.randomUUID().toString(), username);
         authDAO.createAuth(authData);
         return authData;
     }
 
     public void deleteAuth(String token) throws DataAccessException {
+        if (token == null || token.isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
+        if (authDAO.getAuth(token) == null || authDAO.getAuth(token).username().isEmpty()) {
+            throw new DataAccessException("Error: unauthorized");
+        }
         authDAO.deleteAuth(token);
     }
 
