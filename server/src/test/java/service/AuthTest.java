@@ -5,12 +5,11 @@ import dataaccess.MemoryAuthDAO;
 import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.AuthService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AuthTest {
-    static final AuthService authService = new AuthService(new MemoryAuthDAO());
+    static AuthService authService = new AuthService(new MemoryAuthDAO());
 
     @BeforeEach
     void clear() throws DataAccessException {

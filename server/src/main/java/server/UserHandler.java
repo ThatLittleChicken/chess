@@ -7,11 +7,9 @@ import service.UserService;
 import spark.*;
 import com.google.gson.Gson;
 
-import java.util.Map;
-
 import static spark.Spark.halt;
 
-public class UserHandler {
+public class UserHandler extends ErrorHandler {
     private final UserService userService;
     private final AuthService authService;
 
@@ -29,14 +27,7 @@ public class UserHandler {
             res.type("application/json");
             return new Gson().toJson(registerResult);
         } catch (Exception e) {
-            if (e.getMessage().equals("Error: bad request")) {
-                res.status(400);
-            } else if (e.getMessage().equals("Error: already taken")) {
-                res.status(403);
-            } else {
-                res.status(500);
-            }
-            return errorHandler(e, req, res, res.status());
+            return errorHandler(e, req, res);
         }
     }
 
@@ -49,12 +40,7 @@ public class UserHandler {
             res.type("application/json");
             return new Gson().toJson(loginResult);
         } catch (Exception e) {
-            if (e.getMessage().equals("Error: unauthorized")) {
-                res.status(401);
-            } else {
-                res.status(500);
-            }
-            return errorHandler(e, req, res, res.status());
+            return errorHandler(e, req, res);
         }
     }
 
@@ -65,20 +51,7 @@ public class UserHandler {
             res.status(200);
             return "";
         } catch (Exception e) {
-            if (e.getMessage().equals("Error: unauthorized")) {
-                res.status(401);
-            } else {
-                res.status(500);
-            }
-            return errorHandler(e, req, res, res.status());
+            return errorHandler(e, req, res);
         }
-    }
-
-    public Object errorHandler(Exception e, Request req, Response res, int status) {
-        var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage()), "success", false));
-        res.type("application/json");
-        res.status(status);
-        res.body(body);
-        return body;
     }
 }

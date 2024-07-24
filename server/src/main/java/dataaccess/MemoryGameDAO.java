@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO {
-    int ID = 0;
+    int id = 0;
     private final HashMap<Integer, GameData> games = new HashMap<>();
 
     public void clear() throws DataAccessException {
@@ -15,7 +15,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     public GameData createGame(String gameName) throws DataAccessException {
-        GameData game = new GameData(++ID, null, null, gameName, new ChessGame());
+        GameData game = new GameData(++id, null, null, gameName, new ChessGame());
         games.put(game.gameID(), game);
         return game;
     }

@@ -8,12 +8,11 @@ import model.result.CreateResult;
 import model.result.ListResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.GameService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
-    static final GameService gameService = new GameService(new MemoryGameDAO());
+    static GameService gameService = new GameService(new MemoryGameDAO());
 
     @BeforeEach
     void setUp() throws DataAccessException {
