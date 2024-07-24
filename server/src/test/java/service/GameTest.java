@@ -26,19 +26,41 @@ class GameTest {
         assertEquals(1, gameService.listGames().games().size(), "Should have 1 game in list");
         CreateResult cr2 = gameService.createGame(createRequest);
         assertNotEquals(cr.gameID(), cr2.gameID(), "Should have different game IDs");
-        assertThrows(DataAccessException.class, () -> gameService.createGame(new CreateRequest("")), "Should throw exception on empty game name");
+    }
+
+    @Test
+    void createGameBadInputs() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> gameService.createGame(new CreateRequest("")),
+                "Should throw exception on empty game name");
+        assertThrows(DataAccessException.class, () -> gameService.createGame(new CreateRequest(null)),
+                "Should throw exception on null game name");
     }
 
     @Test
     void joinGame() throws DataAccessException {
-        JoinRequest joinRequest = new JoinRequest(1, "WHITE");
-        assertThrows(DataAccessException.class, () -> gameService.joinGame(joinRequest, "test"), "Should throw exception on bad game ID");
-        gameService.createGame(new CreateRequest("test"));
-        assertThrows(DataAccessException.class, () -> gameService.joinGame(new JoinRequest(1, "a"), "test"), "Should throw exception on bad color");
-        gameService.joinGame(joinRequest, "user1");
+        CreateResult cr = gameService.createGame(new CreateRequest("test"));
+        gameService.joinGame(new JoinRequest(cr.gameID(), "WHITE"), "user1");
         ListResult lr = gameService.listGames();
         assertEquals(lr.games().iterator().next().whiteUsername(), "user1", "Should have user1 as white player");
-        assertThrows(DataAccessException.class, () -> gameService.joinGame(joinRequest, "user2"), "Should throw exception on already taken color");
+        gameService.joinGame(new JoinRequest(cr.gameID(), "BLACK"), "user2");
+        lr = gameService.listGames();
+        assertEquals(lr.games().iterator().next().blackUsername(), "user2", "Should have user2 as black player");
+    }
+
+    @Test
+    void joinGameBadInputs() throws DataAccessException {
+        CreateResult cr = gameService.createGame(new CreateRequest("test"));
+        JoinRequest joinRequest = new JoinRequest(cr.gameID(), "WHITE");
+        assertThrows(DataAccessException.class, () -> gameService.joinGame(
+                new JoinRequest(999, "WHITE"), "test"),
+                "Should throw exception on unknown game ID");
+        assertThrows(DataAccessException.class, () -> gameService.joinGame(
+                new JoinRequest(cr.gameID(), "a"), "test"),
+                "Should throw exception on bad color");
+        gameService.joinGame(joinRequest, "user1");
+        assertThrows(DataAccessException.class, () -> gameService.joinGame(
+                joinRequest, "user2"),
+                "Should throw exception on already taken color");
     }
 
     @Test
