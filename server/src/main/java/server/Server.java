@@ -1,6 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.memorydao.MemoryAuthDAO;
+import dataaccess.memorydao.MemoryGameDAO;
+import dataaccess.memorydao.MemoryUserDAO;
 import service.AuthService;
 import service.GameService;
 import service.UserService;
@@ -14,9 +17,9 @@ public class Server {
     private GameService gameService;
 
     public Server() {
-        this.authService = new AuthService(new dataaccess.MemoryAuthDAO());
-        this.userService = new UserService(new dataaccess.MemoryUserDAO());
-        this.gameService = new GameService(new dataaccess.MemoryGameDAO());
+        this.authService = new AuthService(new MemoryAuthDAO());
+        this.userService = new UserService(new MemoryUserDAO());
+        this.gameService = new GameService(new MemoryGameDAO());
     }
 
     public int run(int desiredPort) {

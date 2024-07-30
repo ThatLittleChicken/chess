@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.MemoryGameDAO;
+import dataaccess.memorydao.MemoryGameDAO;
 import model.request.CreateRequest;
 import model.request.JoinRequest;
 import model.result.CreateResult;
