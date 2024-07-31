@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import dataaccess.memorydao.MemoryAuthDAO;
 import dataaccess.memorydao.MemoryGameDAO;
 import dataaccess.memorydao.MemoryUserDAO;
+import dataaccess.mysqldao.MySqlAuthDAO;
+import dataaccess.mysqldao.MySqlGameDAO;
+import dataaccess.mysqldao.MySqlUserDAO;
 import service.AuthService;
 import service.GameService;
 import service.UserService;
@@ -17,9 +20,16 @@ public class Server {
     private GameService gameService;
 
     public Server() {
-        this.authService = new AuthService(new MemoryAuthDAO());
-        this.userService = new UserService(new MemoryUserDAO());
-        this.gameService = new GameService(new MemoryGameDAO());
+//        this.authService = new AuthService(new MemoryAuthDAO());
+//        this.userService = new UserService(new MemoryUserDAO());
+//        this.gameService = new GameService(new MemoryGameDAO());
+        try {
+            this.authService = new AuthService(new MySqlAuthDAO());
+            this.userService = new UserService(new MySqlUserDAO());
+            this.gameService = new GameService(new MySqlGameDAO());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int run(int desiredPort) {
