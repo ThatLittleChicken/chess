@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 public class MySqlUserDAO extends DatabaseFunctionHandler implements UserDAO {
 
     private final String[] createStatements = {
-            "CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) PRIMARY KEY, email VARCHAR(255), password VARCHAR(255))"
+            "CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, PRIMARY KEY (username))"
     };
 
     public MySqlUserDAO() throws DataAccessException {
@@ -18,7 +18,7 @@ public class MySqlUserDAO extends DatabaseFunctionHandler implements UserDAO {
     }
 
     public void clear() throws DataAccessException {
-        var statement = "DELETE FROM users";
+        var statement = "TRUNCATE TABLE users";
         executeUpdate(statement);
     }
 

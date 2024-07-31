@@ -13,11 +13,11 @@ import java.util.Collection;
 public class MySqlGameDAO extends DatabaseFunctionHandler implements GameDAO {
 
     private final String[] createStatements = {
-            "CREATE TABLE IF NOT EXISTS games (gameID INT NOT NULL AUTO_INCREMENT, gameName VARCHAR(255), gameData TEXT)"
+            "CREATE TABLE IF NOT EXISTS games (gameID INT NOT NULL AUTO_INCREMENT, gameName VARCHAR(255) NOT NULL, gameData TEXT, PRIMARY KEY (gameID))"
     };
 
     public void clear() throws DataAccessException {
-        var statement = "DELETE FROM games";
+        var statement = "TRUNCATE TABLE games";
         executeUpdate(statement);
     }
 

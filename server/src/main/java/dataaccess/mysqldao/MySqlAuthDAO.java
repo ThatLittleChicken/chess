@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 public class MySqlAuthDAO extends DatabaseFunctionHandler implements AuthDAO {
 
     private final String[] createStatements = {
-            "CREATE TABLE IF NOT EXISTS auth (authToken VARCHAR(255) PRIMARY KEY, username VARCHAR(255))"
+            "CREATE TABLE IF NOT EXISTS auth (authToken VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL, PRIMARY KEY (authToken))"
     };
 
     public MySqlAuthDAO() throws DataAccessException {
@@ -17,7 +17,7 @@ public class MySqlAuthDAO extends DatabaseFunctionHandler implements AuthDAO {
     }
 
     public void clear() throws DataAccessException {
-        var statement = "DELETE FROM auth";
+        var statement = "TRUNCATE TABLE auth";
         executeUpdate(statement);
     }
 
