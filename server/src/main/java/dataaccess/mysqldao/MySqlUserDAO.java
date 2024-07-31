@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 public class MySqlUserDAO extends DatabaseFunctionHandler implements UserDAO {
 
     private final String[] createStatements = {
-            "CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) PRIMARY KEY, userdata VARCHAR(255))"
+            "CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) PRIMARY KEY, email VARCHAR(255), password VARCHAR(255))"
     };
 
     public MySqlUserDAO() throws DataAccessException {
@@ -23,9 +23,8 @@ public class MySqlUserDAO extends DatabaseFunctionHandler implements UserDAO {
     }
 
     public UserData createUser(UserData user) throws DataAccessException {
-        var statement = "INSERT INTO users (username, userdata) VALUES (?, ?)";
-        var json = new Gson().toJson(user);
-        executeUpdate(statement, user.username(), json);
+        var statement = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+        executeUpdate(statement, user.username(), user.email(), user.password());
         return user;
     }
 
@@ -48,7 +47,8 @@ public class MySqlUserDAO extends DatabaseFunctionHandler implements UserDAO {
 
     private UserData readUser(ResultSet rs) throws java.sql.SQLException {
         var username = rs.getString("username");
-        var json = rs.getString("userdata");
-        return new Gson().fromJson(json, UserData.class);
+        var email = rs.getString("email");
+        var password = rs.getString("password");
+        return new UserData(username, email, password);
     }
 }
