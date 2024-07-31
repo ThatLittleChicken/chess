@@ -49,6 +49,6 @@ public class MySqlUserDAO extends DatabaseFunctionHandler implements UserDAO {
         var username = rs.getString("username");
         var email = rs.getString("email");
         var password = rs.getString("password");
-        return new UserData(username, email, password);
+        return new UserData(username, password, email);
     }
 }

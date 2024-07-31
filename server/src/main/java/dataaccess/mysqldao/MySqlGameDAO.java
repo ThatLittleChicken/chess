@@ -16,6 +16,10 @@ public class MySqlGameDAO extends DatabaseFunctionHandler implements GameDAO {
             "CREATE TABLE IF NOT EXISTS games (gameID INT NOT NULL AUTO_INCREMENT, gameName VARCHAR(255) NOT NULL, gameData TEXT, PRIMARY KEY (gameID))"
     };
 
+    public MySqlGameDAO() throws DataAccessException {
+        configureDatabase(createStatements);
+    }
+
     public void clear() throws DataAccessException {
         var statement = "TRUNCATE TABLE games";
         executeUpdate(statement);
@@ -60,20 +64,20 @@ public class MySqlGameDAO extends DatabaseFunctionHandler implements GameDAO {
         } catch (Exception e) {
             throw new DataAccessException(String.format("Unable to get data: %s", e.getMessage()));
         }
-        return null;
+        return games;
     }
 
     public void updateGame(int gameID, GameData game) throws DataAccessException {
         var statement = "UPDATE games SET gameName = ?, gameData = ? WHERE gameID = ?";
-        var json = new Gson().toJson(game.game());
+        var json = new Gson().toJson(game);
         executeUpdate(statement, game.gameName(), json, game.gameID());
     }
 
     private GameData readGame(ResultSet rs) throws java.sql.SQLException {
         var gameID = rs.getInt("gameID");
         var gameName = rs.getString("gameName");
-        var gameData = rs.getString("gameData");
-        var chessGame = new Gson().fromJson(gameData, ChessGame.class);
-        return new GameData(gameID, null, null, gameName, chessGame);
+        var json = rs.getString("gameData");
+        var gameData = new Gson().fromJson(json, GameData.class);
+        return new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameName, gameData.game());
     }
 }
