@@ -20,9 +20,6 @@ public class Server {
     private GameService gameService;
 
     public Server() {
-//        this.authService = new AuthService(new MemoryAuthDAO());
-//        this.userService = new UserService(new MemoryUserDAO());
-//        this.gameService = new GameService(new MemoryGameDAO());
         try {
             this.authService = new AuthService(new MySqlAuthDAO());
             this.userService = new UserService(new MySqlUserDAO());
