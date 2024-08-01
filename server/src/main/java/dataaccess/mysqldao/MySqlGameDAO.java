@@ -13,7 +13,8 @@ import java.util.Collection;
 public class MySqlGameDAO extends DatabaseFunctionHandler implements GameDAO {
 
     private final String[] createStatements = {
-            "CREATE TABLE IF NOT EXISTS games (gameID INT NOT NULL AUTO_INCREMENT, gameName VARCHAR(255) NOT NULL, gameData TEXT, PRIMARY KEY (gameID))"
+            "CREATE TABLE IF NOT EXISTS games (gameID INT NOT NULL AUTO_INCREMENT, gameName VARCHAR(255) NOT NULL, " +
+                    "whiteUsername VARCHAR(255), blackUsername VARCHAR(255), gameData TEXT, PRIMARY KEY (gameID))"
     };
 
     public MySqlGameDAO() throws DataAccessException {
@@ -26,10 +27,13 @@ public class MySqlGameDAO extends DatabaseFunctionHandler implements GameDAO {
     }
 
     public GameData createGame(String gameName) throws DataAccessException {
-        var statement = "INSERT INTO games (gameName, gameData) VALUES (?, ?)";
+        if (gameName == null || gameName.isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
+        var statement = "INSERT INTO games (gameName, whiteUsername, blackUsername, gameData) VALUES (?, ?, ?, ?)";
         var chessGame = new ChessGame();
         var json = new Gson().toJson(chessGame);
-        var id = executeUpdate(statement, gameName, json);
+        var id = executeUpdate(statement, gameName, null, null, json);
         return new GameData(id, null, null, gameName, chessGame);
     }
 
@@ -68,16 +72,21 @@ public class MySqlGameDAO extends DatabaseFunctionHandler implements GameDAO {
     }
 
     public void updateGame(int gameID, GameData game) throws DataAccessException {
-        var statement = "UPDATE games SET gameName = ?, gameData = ? WHERE gameID = ?";
-        var json = new Gson().toJson(game);
-        executeUpdate(statement, game.gameName(), json, game.gameID());
+        if (game == null) {
+            throw new DataAccessException("Error: bad request");
+        }
+        var statement = "UPDATE games SET gameName = ?, whiteUsername = ?, blackUsername = ?, gameData = ? WHERE gameID = ?";
+        var json = new Gson().toJson(game.game());
+        executeUpdate(statement, game.gameName(), game.whiteUsername(), game.blackUsername(), json, game.gameID());
     }
 
     private GameData readGame(ResultSet rs) throws java.sql.SQLException {
         var gameID = rs.getInt("gameID");
         var gameName = rs.getString("gameName");
+        var whiteUsername = rs.getString("whiteUsername");
+        var blackUsername = rs.getString("blackUsername");
         var json = rs.getString("gameData");
-        var gameData = new Gson().fromJson(json, GameData.class);
-        return new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameName, gameData.game());
+        var chessGame = new Gson().fromJson(json, ChessGame.class);
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
     }
 }
