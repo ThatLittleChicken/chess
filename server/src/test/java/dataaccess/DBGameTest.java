@@ -59,16 +59,20 @@ class DBGameTest {
 
     @Test
     void listGames() throws DataAccessException {
-        var games = mySqlGameDAO.listGames();
-        Assertions.assertEquals(0, games.size(), "Should have listed no games");
         var gd = mySqlGameDAO.createGame("game1");
         var gd2 = mySqlGameDAO.createGame("game2");
-        var games2 = mySqlGameDAO.listGames();
-        Assertions.assertEquals(2, games2.size(), "Should have listed all games");
-        Assertions.assertTrue(games2.iterator().next().game().getBoard().equals(gd.game().getBoard()),
+        var games = mySqlGameDAO.listGames();
+        Assertions.assertEquals(2, games.size(), "Should have listed all games");
+        Assertions.assertTrue(games.iterator().next().game().getBoard().equals(gd.game().getBoard()),
                 "Should have listed all games");
-        Assertions.assertTrue(games2.iterator().next().game().getBoard().equals(gd2.game().getBoard()),
+        Assertions.assertTrue(games.iterator().next().game().getBoard().equals(gd2.game().getBoard()),
                 "Should have listed all games");
+    }
+
+    @Test
+    void listGamesErrors() throws DataAccessException {
+        var games = mySqlGameDAO.listGames();
+        Assertions.assertEquals(0, games.size(), "Should have listed no games");
     }
 
     @Test
