@@ -10,7 +10,8 @@ import java.sql.ResultSet;
 public class MySqlUserDAO extends DatabaseFunctionHandler implements UserDAO {
 
     private final String[] createStatements = {
-            "CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, PRIMARY KEY (username))"
+            "CREATE TABLE IF NOT EXISTS users (username VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, " +
+                    "password VARCHAR(255) NOT NULL, PRIMARY KEY (username))"
     };
 
     public MySqlUserDAO() throws DataAccessException {
@@ -23,12 +24,19 @@ public class MySqlUserDAO extends DatabaseFunctionHandler implements UserDAO {
     }
 
     public UserData createUser(UserData user) throws DataAccessException {
+        if (user.username() == null || user.username().isEmpty() || user.password() == null || user.password().isEmpty() ||
+            user.email() == null || user.email().isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
         var statement = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
         executeUpdate(statement, user.username(), user.email(), user.password());
         return user;
     }
 
     public UserData getUser(String username) throws DataAccessException {
+        if (username == null || username.isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM users WHERE username = ?";
             try (var ps = conn.prepareStatement(statement)) {

@@ -22,12 +22,18 @@ public class MySqlAuthDAO extends DatabaseFunctionHandler implements AuthDAO {
     }
 
     public AuthData createAuth(AuthData auth) throws DataAccessException {
+        if (auth.authToken() == null || auth.authToken().isEmpty() || auth.username() == null || auth.username().isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
         executeUpdate(statement, auth.authToken(), auth.username());
         return auth;
     }
 
     public AuthData getAuth(String authToken) throws DataAccessException {
+        if (authToken == null || authToken.isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM auth WHERE authToken = ?";
             try (var ps = conn.prepareStatement(statement)) {
@@ -45,6 +51,9 @@ public class MySqlAuthDAO extends DatabaseFunctionHandler implements AuthDAO {
     }
 
     public void deleteAuth(String authToken) throws DataAccessException {
+        if (authToken == null || authToken.isEmpty()) {
+            throw new DataAccessException("Error: bad request");
+        }
         var statement = "DELETE FROM auth WHERE authToken = ?";
         executeUpdate(statement, authToken);
     }
