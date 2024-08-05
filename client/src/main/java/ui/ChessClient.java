@@ -34,6 +34,11 @@ public class ChessClient {
                 case "help" -> help();
                 case "register" -> register(params);
                 case "login" -> login(params);
+                case "logout" -> logout();
+                case "create" -> createGame(params);
+                case "list" -> listGames();
+                case "join" -> joinGame(params);
+                case "observe" -> observeGame(params);
                 case "quit" -> "quit";
                 default -> throw new DataAccessException("Unknown command, try 'help'");
             };
@@ -92,6 +97,67 @@ public class ChessClient {
             throw new DataAccessException("Invalid input: login <USERNAME> <PASSWORD>");
         }
         return "Logged in as " + params[0];
+    }
+
+    public String logout() throws DataAccessException {
+        assertState(State.LOGGED_IN);
+        serverFacade.logout(authToken);
+        authToken = null;
+        state = State.LOGGED_OUT;
+        return "Logged out";
+    }
+
+    public String createGame(String... params) throws DataAccessException {
+        assertState(State.LOGGED_IN);
+        if (params.length == 1) {
+            CreateRequest cr = new CreateRequest(params[0]);
+            serverFacade.createGame(cr, authToken);
+            return "Created game " + params[0];
+        } else {
+            throw new DataAccessException("Invalid input: create <NAME>");
+        }
+    }
+
+    public String listGames() throws DataAccessException {
+        assertState(State.LOGGED_IN);
+        StringBuilder result = new StringBuilder();
+        int i = 1;
+        listToGameID.clear();
+        ListResult lr = serverFacade.listGames(authToken);
+        for (var game : lr.games()) {
+            result.append(String.format("%s. %s | White Player: %s, Black Player: %s\n",
+                    i++, game.gameName(), game.whiteUsername(), game.blackUsername()));
+            listToGameID.put(i-1, game.gameID());
+        }
+        return result.toString();
+    }
+
+    public String joinGame(String... params) throws DataAccessException {
+        assertState(State.LOGGED_IN);
+        if (params.length == 2 && (params[1].equalsIgnoreCase("WHITE") || params[1].equalsIgnoreCase("BLACK"))) {
+            int id = listToGameID.get(Integer.parseInt(params[0]));
+            JoinRequest jr = new JoinRequest(id, params[1].toUpperCase());
+            serverFacade.joinGame(jr, authToken);
+            state = State.GAMEPLAY;
+            ListResult lr = serverFacade.listGames(authToken);
+            lr.games().stream().filter(game -> game.gameID() == id).findFirst().ifPresent(game -> currentGame = game);
+            return "Joined game "+ currentGame.gameName() + " as " + params[1];
+        } else {
+            return "Invalid input: join <ID> [WHITE|BLACK]";
+        }
+    }
+
+    public String observeGame(String... params) throws DataAccessException {
+        assertState(State.LOGGED_IN);
+        if (params.length == 1) {
+            int id = listToGameID.get(Integer.parseInt(params[0]));
+            state = State.GAMEPLAY;
+            ListResult lr = serverFacade.listGames(authToken);
+            lr.games().stream().filter(game -> game.gameID() == id).findFirst().ifPresent(game -> currentGame = game);
+            return "Observing game " + currentGame.gameName();
+        } else {
+            return "Invalid input: observe <ID>";
+        }
     }
 
     public String getState() {
