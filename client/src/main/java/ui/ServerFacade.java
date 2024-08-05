@@ -20,6 +20,30 @@ public class ServerFacade {
         serverUrl = "http://localhost:" + port;
     }
 
+    public RegisterResult register(RegisterRequest req) throws DataAccessException {
+        return makeRequest("POST", "/user", req, RegisterResult.class);
+    }
+
+    public LoginResult login(RegisterRequest req) throws DataAccessException {
+        return makeRequest("POST", "/session", req, LoginResult.class);
+    }
+
+    public void logout() throws DataAccessException {
+        makeRequest("DELETE", "/session", null, null);
+    }
+
+    public ListResult listGames() throws DataAccessException {
+        return makeRequest("GET", "/game", null, ListResult.class);
+    }
+
+    public CreateResult createGame(CreateRequest req) throws DataAccessException {
+        return makeRequest("POST", "/game", req, CreateResult.class);
+    }
+
+    public void joinGame(JoinRequest req) throws DataAccessException {
+        makeRequest("PUT", "/game", req, null);
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws DataAccessException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
