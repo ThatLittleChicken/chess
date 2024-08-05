@@ -1,8 +1,13 @@
 import chess.*;
+import ui.Repl;
 
 public class Main {
     public static void main(String[] args) {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        System.out.println("♕ 240 Chess Client: " + piece);
+        if (args.length == 1) {
+            Repl repl = new Repl(Integer.parseInt(args[0]));
+            repl.run();
+        }
+        Repl repl = new Repl(8000);
+        repl.run();
     }
 }
