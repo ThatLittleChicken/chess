@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.request.CreateRequest;
 import model.request.JoinRequest;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.CreateResult;
 import model.result.ListResult;
@@ -16,40 +17,41 @@ import java.net.*;
 public class ServerFacade {
     private final String serverUrl;
 
-    public ServerFacade(String port) {
+    public ServerFacade(int port) {
         serverUrl = "http://localhost:" + port;
     }
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException {
-        return makeRequest("POST", "/user", req, RegisterResult.class);
+        return makeRequest("POST", "/user", null, req, RegisterResult.class);
     }
 
-    public LoginResult login(RegisterRequest req) throws DataAccessException {
-        return makeRequest("POST", "/session", req, LoginResult.class);
+    public LoginResult login(LoginRequest req) throws DataAccessException {
+        return makeRequest("POST", "/session", null, req, LoginResult.class);
     }
 
-    public void logout() throws DataAccessException {
-        makeRequest("DELETE", "/session", null, null);
+    public void logout(String authToken) throws DataAccessException {
+        makeRequest("DELETE", "/session", authToken,null, null);
     }
 
-    public ListResult listGames() throws DataAccessException {
-        return makeRequest("GET", "/game", null, ListResult.class);
+    public ListResult listGames(String authToken) throws DataAccessException {
+        return makeRequest("GET", "/game", authToken, null, ListResult.class);
     }
 
-    public CreateResult createGame(CreateRequest req) throws DataAccessException {
-        return makeRequest("POST", "/game", req, CreateResult.class);
+    public CreateResult createGame(CreateRequest req, String authToken) throws DataAccessException {
+        return makeRequest("POST", "/game", authToken, req, CreateResult.class);
     }
 
-    public void joinGame(JoinRequest req) throws DataAccessException {
-        makeRequest("PUT", "/game", req, null);
+    public void joinGame(JoinRequest req, String authToken) throws DataAccessException {
+        makeRequest("PUT", "/game", authToken, req, null);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws DataAccessException {
+    private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass) throws DataAccessException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            http.setRequestProperty("Authorization", authToken);
 
             writeBody(request, http);
             http.connect();
