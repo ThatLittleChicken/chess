@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Repl {
     private final ChessClient client;
-    private BoardUI boardUI = new BoardUI();
+    private final BoardUI boardUI = new BoardUI();
 
     public Repl(int port) {
         client = new ChessClient(new ServerFacade(port));

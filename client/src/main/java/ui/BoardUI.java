@@ -4,8 +4,6 @@ import chess.ChessGame;
 import chess.ChessPosition;
 import model.GameData;
 
-import static chess.ChessPiece.PieceType.*;
-
 public class BoardUI {
     public BoardUI() {
     }

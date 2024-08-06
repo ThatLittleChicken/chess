@@ -17,7 +17,7 @@ public class ServerFacadeTests {
 
     private static Server server;
     static ServerFacade facade;
-    private static RegisterRequest RR = new RegisterRequest("player1", "password", "p1email.com");
+    private static final RegisterRequest RR = new RegisterRequest("player1", "password", "p1email.com");
 
     @BeforeAll
     public static void init() {
