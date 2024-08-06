@@ -11,10 +11,10 @@ public class BoardUI {
     }
 
     public String drawBoard(GameData gameData) {
-        return drawBlackBoard(gameData.game()) + "\n\n" + drawWhiteBoard(gameData.game());
+        return "\n" + drawBlackBoard(gameData.game()) + "\n\n" + drawWhiteBoard(gameData.game());
     }
 
-    public String drawWhiteBoard(ChessGame game) {
+    public String drawBlackBoard(ChessGame game) {
         StringBuilder result = new StringBuilder();
         result.append(EscapeSequences.SET_TEXT_COLOR_BLACK);
         result.append(String.format("%s%s h  g  f  e  d  c  b  a %s%s\n",
@@ -32,7 +32,7 @@ public class BoardUI {
         return result.toString();
     }
 
-    public String drawBlackBoard(ChessGame game) {
+    public String drawWhiteBoard(ChessGame game) {
         StringBuilder result = new StringBuilder();
         result.append(EscapeSequences.SET_TEXT_COLOR_BLACK);
         result.append(String.format("%s%s a  b  c  d  e  f  g  h %s%s\n",
