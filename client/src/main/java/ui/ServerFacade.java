@@ -45,6 +45,10 @@ public class ServerFacade {
         makeRequest("PUT", "/game", authToken, req, null);
     }
 
+    public void clearAll() throws DataAccessException {
+        makeRequest("DELETE", "/db", null, null, null);
+    }
+
     private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass) throws DataAccessException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
