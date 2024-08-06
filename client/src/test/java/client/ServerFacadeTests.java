@@ -28,7 +28,7 @@ public class ServerFacadeTests {
     }
 
     @BeforeEach
-    void clearDB() throws DataAccessException {
+    void clearDB() throws Exception {
         facade.clearAll();
     }
 

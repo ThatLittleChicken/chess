@@ -1,7 +1,5 @@
 package ui;
 
-import dataaccess.DataAccessException;
-import model.AuthData;
 import model.GameData;
 import model.request.CreateRequest;
 import model.request.JoinRequest;
@@ -40,9 +38,9 @@ public class ChessClient {
                 case "join" -> joinGame(params);
                 case "observe" -> observeGame(params);
                 case "quit" -> "quit";
-                default -> throw new DataAccessException("Unknown command, try 'help'");
+                default -> throw new Exception("Unknown command, try 'help'");
             };
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             return ex.getMessage();
         }
     }
@@ -73,7 +71,7 @@ public class ChessClient {
         return result;
     }
 
-    public String register(String... params) throws DataAccessException {
+    public String register(String... params) throws Exception {
         assertState(State.LOGGED_OUT);
         if (params.length == 3) {
             RegisterRequest rreq = new RegisterRequest(params[0], params[1], params[2]);
@@ -81,12 +79,12 @@ public class ChessClient {
             authToken = rres.authToken();
             state = State.LOGGED_IN;
         } else {
-            throw new DataAccessException("Invalid input: register <USERNAME> <PASSWORD> <EMAIL>");
+            throw new Exception("Invalid input: register <USERNAME> <PASSWORD> <EMAIL>");
         }
         return "Registered new user as " + params[0];
     }
 
-    public String login(String... params) throws DataAccessException {
+    public String login(String... params) throws Exception {
         assertState(State.LOGGED_OUT);
         if (params.length == 2) {
             LoginRequest lreq = new LoginRequest(params[0], params[1]);
@@ -94,12 +92,12 @@ public class ChessClient {
             authToken = lres.authToken();
             state = State.LOGGED_IN;
         } else {
-            throw new DataAccessException("Invalid input: login <USERNAME> <PASSWORD>");
+            throw new Exception("Invalid input: login <USERNAME> <PASSWORD>");
         }
         return "Logged in as " + params[0];
     }
 
-    public String logout() throws DataAccessException {
+    public String logout() throws Exception {
         assertState(State.LOGGED_IN);
         serverFacade.logout(authToken);
         authToken = null;
@@ -107,18 +105,18 @@ public class ChessClient {
         return "Logged out";
     }
 
-    public String createGame(String... params) throws DataAccessException {
+    public String createGame(String... params) throws Exception {
         assertState(State.LOGGED_IN);
         if (params.length == 1) {
             CreateRequest cr = new CreateRequest(params[0]);
             serverFacade.createGame(cr, authToken);
             return "Created game " + params[0];
         } else {
-            throw new DataAccessException("Invalid input: create <NAME>");
+            throw new Exception("Invalid input: create <NAME>");
         }
     }
 
-    public String listGames() throws DataAccessException {
+    public String listGames() throws Exception {
         assertState(State.LOGGED_IN);
         StringBuilder result = new StringBuilder();
         int i = 1;
@@ -132,7 +130,7 @@ public class ChessClient {
         return result.toString();
     }
 
-    public String joinGame(String... params) throws DataAccessException {
+    public String joinGame(String... params) throws Exception {
         assertState(State.LOGGED_IN);
         if (params.length == 2 && (params[1].equalsIgnoreCase("WHITE") || params[1].equalsIgnoreCase("BLACK"))) {
             int id = listToGameID.get(Integer.parseInt(params[0]));
@@ -147,7 +145,7 @@ public class ChessClient {
         }
     }
 
-    public String observeGame(String... params) throws DataAccessException {
+    public String observeGame(String... params) throws Exception {
         assertState(State.LOGGED_IN);
         if (params.length == 1) {
             int id = listToGameID.get(Integer.parseInt(params[0]));
@@ -168,9 +166,9 @@ public class ChessClient {
         return currentGame;
     }
 
-    private void assertState(State state) throws DataAccessException {
+    private void assertState(State state) throws Exception {
         if (this.state != state) {
-            throw new DataAccessException("Unknown command, try 'help'");
+            throw new Exception("Unknown command, try 'help'");
         }
     }
 }
