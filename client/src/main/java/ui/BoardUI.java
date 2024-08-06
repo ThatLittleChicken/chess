@@ -20,8 +20,8 @@ public class BoardUI {
         for (int i = 1; i <= 8; i++) {
             result.append(String.format("%s %s ", EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, i));
             for (int j = 1; j <= 8; j++) {
-                var squareBg = ((i+j) % 2 == 0) ? EscapeSequences.SET_BG_COLOR_BEIGE : EscapeSequences.SET_BG_COLOR_BROWN;
-                result.append(String.format("%s%s", squareBg, pieceSymbol(game, i, j)));
+                var bgSquare = ((i+j) % 2 != 0) ? EscapeSequences.SET_BG_COLOR_BROWN : EscapeSequences.SET_BG_COLOR_BEIGE;
+                result.append(String.format("%s%s", bgSquare, pieceSymbol(game, i, j)));
             }
             result.append(String.format("%s %s %s\n", EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, i, EscapeSequences.RESET_BG_COLOR));
         }

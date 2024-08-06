@@ -6,7 +6,7 @@ public class Main {
             Repl repl = new Repl(Integer.parseInt(args[0]));
             repl.run();
         }
-        Repl repl = new Repl(8000);
+        Repl repl = new Repl(8080);
         repl.run();
     }
 }
