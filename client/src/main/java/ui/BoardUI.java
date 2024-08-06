@@ -12,24 +12,6 @@ public class BoardUI {
         return "\n" + drawBlackBoard(gameData.game()) + "\n\n" + drawWhiteBoard(gameData.game());
     }
 
-    public String drawBlackBoard(ChessGame game) {
-        StringBuilder result = new StringBuilder();
-        result.append(EscapeSequences.SET_TEXT_COLOR_BLACK);
-        result.append(String.format("%s%s h  g  f  e  d  c  b  a %s%s\n",
-                EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, EscapeSequences.EMPTY, EscapeSequences.EMPTY, EscapeSequences.RESET_BG_COLOR));
-        for (int i = 1; i <= 8; i++) {
-            result.append(String.format("%s %s ", EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, i));
-            for (int j = 1; j <= 8; j++) {
-                var bgSquare = ((i+j) % 2 != 0) ? EscapeSequences.SET_BG_COLOR_BROWN : EscapeSequences.SET_BG_COLOR_BEIGE;
-                result.append(String.format("%s%s", bgSquare, pieceSymbol(game, i, j)));
-            }
-            result.append(String.format("%s %s %s\n", EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, i, EscapeSequences.RESET_BG_COLOR));
-        }
-        result.append(String.format("%s%s h  g  f  e  d  c  b  a %s%s",
-                EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, EscapeSequences.EMPTY, EscapeSequences.EMPTY, EscapeSequences.RESET_BG_COLOR));
-        return result.toString();
-    }
-
     public String drawWhiteBoard(ChessGame game) {
         StringBuilder result = new StringBuilder();
         result.append(EscapeSequences.SET_TEXT_COLOR_BLACK);
@@ -37,13 +19,31 @@ public class BoardUI {
                 EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, EscapeSequences.EMPTY, EscapeSequences.EMPTY, EscapeSequences.RESET_BG_COLOR));
         for (int i = 8; i >= 1; i--) {
             result.append(String.format("%s %s ", EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, i));
-            for (int j = 8; j >= 1; j--) {
-                var squareBg = ((i+j) % 2 == 0) ? EscapeSequences.SET_BG_COLOR_BEIGE : EscapeSequences.SET_BG_COLOR_BROWN;
-                result.append(String.format("%s%s", squareBg, pieceSymbol(game, i, j)));
+            for (int j = 1; j <= 8; j++) {
+                var bgSquare = ((i+j) % 2 == 0) ? EscapeSequences.SET_BG_COLOR_BROWN : EscapeSequences.SET_BG_COLOR_BEIGE;
+                result.append(String.format("%s%s", bgSquare, pieceSymbol(game, i, j)));
             }
             result.append(String.format("%s %s %s\n", EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, i, EscapeSequences.RESET_BG_COLOR));
         }
         result.append(String.format("%s%s a  b  c  d  e  f  g  h %s%s",
+                EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, EscapeSequences.EMPTY, EscapeSequences.EMPTY, EscapeSequences.RESET_BG_COLOR));
+        return result.toString();
+    }
+
+    public String drawBlackBoard(ChessGame game) {
+        StringBuilder result = new StringBuilder();
+        result.append(EscapeSequences.SET_TEXT_COLOR_BLACK);
+        result.append(String.format("%s%s h  g  f  e  d  c  b  a %s%s\n",
+                EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, EscapeSequences.EMPTY, EscapeSequences.EMPTY, EscapeSequences.RESET_BG_COLOR));
+        for (int i = 1; i <= 8; i++) {
+            result.append(String.format("%s %s ", EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, i));
+            for (int j = 8; j >= 1; j--) {
+                var squareBg = ((i+j) % 2 != 0) ? EscapeSequences.SET_BG_COLOR_BEIGE : EscapeSequences.SET_BG_COLOR_BROWN;
+                result.append(String.format("%s%s", squareBg, pieceSymbol(game, i, j)));
+            }
+            result.append(String.format("%s %s %s\n", EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, i, EscapeSequences.RESET_BG_COLOR));
+        }
+        result.append(String.format("%s%s h  g  f  e  d  c  b  a %s%s",
                 EscapeSequences.SET_BG_COLOR_LIGHT_BROWN, EscapeSequences.EMPTY, EscapeSequences.EMPTY, EscapeSequences.RESET_BG_COLOR));
         return result.toString();
     }
