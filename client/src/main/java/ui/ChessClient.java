@@ -74,10 +74,14 @@ public class ChessClient {
     public String register(String... params) throws Exception {
         assertState(State.LOGGED_OUT);
         if (params.length == 3) {
-            RegisterRequest rreq = new RegisterRequest(params[0], params[1], params[2]);
-            RegisterResult rres = serverFacade.register(rreq);
-            authToken = rres.authToken();
-            state = State.LOGGED_IN;
+            try {
+                RegisterRequest rreq = new RegisterRequest(params[0], params[1], params[2]);
+                RegisterResult rres = serverFacade.register(rreq);
+                authToken = rres.authToken();
+                state = State.LOGGED_IN;
+            } catch (Exception e) {
+                throw new Exception("Username already exists");
+            }
         } else {
             throw new Exception("Invalid input: register <USERNAME> <PASSWORD> <EMAIL>");
         }
@@ -87,10 +91,14 @@ public class ChessClient {
     public String login(String... params) throws Exception {
         assertState(State.LOGGED_OUT);
         if (params.length == 2) {
-            LoginRequest lreq = new LoginRequest(params[0], params[1]);
-            LoginResult lres = serverFacade.login(lreq);
-            authToken = lres.authToken();
-            state = State.LOGGED_IN;
+            try {
+                LoginRequest lreq = new LoginRequest(params[0], params[1]);
+                LoginResult lres = serverFacade.login(lreq);
+                authToken = lres.authToken();
+                state = State.LOGGED_IN;
+            } catch (Exception e) {
+                throw new Exception("Invalid username or password");
+            }
         } else {
             throw new Exception("Invalid input: login <USERNAME> <PASSWORD>");
         }
@@ -133,28 +141,36 @@ public class ChessClient {
     public String joinGame(String... params) throws Exception {
         assertState(State.LOGGED_IN);
         if (params.length == 2 && (params[1].equalsIgnoreCase("WHITE") || params[1].equalsIgnoreCase("BLACK"))) {
-            int id = listToGameID.get(Integer.parseInt(params[0]));
-            JoinRequest jr = new JoinRequest(id, params[1].toUpperCase());
-            serverFacade.joinGame(jr, authToken);
-            state = State.GAMEPLAY;
-            ListResult lr = serverFacade.listGames(authToken);
-            lr.games().stream().filter(game -> game.gameID() == id).findFirst().ifPresent(game -> currentGame = game);
-            return "Joined game "+ currentGame.gameName() + " as " + params[1];
+            try {
+                int id = listToGameID.get(Integer.parseInt(params[0]));
+                JoinRequest jr = new JoinRequest(id, params[1].toUpperCase());
+                serverFacade.joinGame(jr, authToken);
+                state = State.GAMEPLAY;
+                ListResult lr = serverFacade.listGames(authToken);
+                lr.games().stream().filter(game -> game.gameID() == id).findFirst().ifPresent(game -> currentGame = game);
+                return "Joined game " + currentGame.gameName() + " as " + params[1];
+            } catch (Exception e) {
+                throw new Exception("Unknown game ID, try 'list'");
+            }
         } else {
-            return "Invalid input: join <ID> [WHITE|BLACK]";
+            throw new Exception("Invalid input: join <ID> [WHITE|BLACK]");
         }
     }
 
     public String observeGame(String... params) throws Exception {
         assertState(State.LOGGED_IN);
         if (params.length == 1) {
-            int id = listToGameID.get(Integer.parseInt(params[0]));
-            state = State.GAMEPLAY;
-            ListResult lr = serverFacade.listGames(authToken);
-            lr.games().stream().filter(game -> game.gameID() == id).findFirst().ifPresent(game -> currentGame = game);
-            return "Observing game " + currentGame.gameName();
+            try {
+                int id = listToGameID.get(Integer.parseInt(params[0]));
+                state = State.GAMEPLAY;
+                ListResult lr = serverFacade.listGames(authToken);
+                lr.games().stream().filter(game -> game.gameID() == id).findFirst().ifPresent(game -> currentGame = game);
+                return "Observing game " + currentGame.gameName();
+            } catch (Exception e) {
+                throw new Exception("Unknown game ID, try 'list'");
+            }
         } else {
-            return "Invalid input: observe <ID>";
+            throw new Exception("Invalid input: observe <ID>");
         }
     }
 
