@@ -1,13 +1,18 @@
 package ui;
 
+import ui.websocket.NotificationHandler;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
+
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements NotificationHandler {
     private final ChessClient client;
-    private final BoardUI boardUI = new BoardUI();
 
     public Repl(int port) {
-        client = new ChessClient(new ServerFacade(port));
+        client = new ChessClient(port, this);
     }
 
     public void run() {
@@ -24,7 +29,6 @@ public class Repl {
             try {
                 result = client.eval(line);
                 System.out.print(result);
-                printBoard();
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -37,10 +41,16 @@ public class Repl {
         System.out.print("\n" + EscapeSequences.RESET_TEXT_COLOR + "[" + client.getState() + "] >>> " + EscapeSequences.SET_TEXT_COLOR_GREEN);
     }
 
-    public void printBoard() {
-        if (client.getCurrentGame() != null) {
-            System.out.println();
-            System.out.println(boardUI.drawBoard(client.getCurrentGame()));
-        }
+    public void notify(NotificationMessage notificationMessage) {
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + notificationMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
     }
+
+    public void notify(ErrorMessage errorMessage) {
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + errorMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
+    }
+
+    public void notify(LoadGameMessage loadGameMessage) {
+        System.out.println(client.redrawBoard());
+    }
+
 }
