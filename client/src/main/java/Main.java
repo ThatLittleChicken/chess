@@ -5,8 +5,9 @@ public class Main {
         if (args.length == 1) {
             Repl repl = new Repl(Integer.parseInt(args[0]));
             repl.run();
+        } else {
+            Repl repl = new Repl(8080);
+            repl.run();
         }
-        Repl repl = new Repl(8080);
-        repl.run();
     }
 }

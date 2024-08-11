@@ -2,6 +2,10 @@ import server.Server;
 
 public class Main {
     public static void main(String[] args) {
-        new Server().run(8080);
+        if (args.length == 1) {
+            new Server().run(Integer.parseInt(args[0]));
+        } else {
+            new Server().run(8080);
+        }
     }
 }
