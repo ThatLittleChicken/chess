@@ -183,7 +183,7 @@ public class ChessClient {
                 playerColor = ChessGame.TeamColor.valueOf(params[1].toUpperCase());
                 ws = new WebSocketFacade(port, notificationHandler);
                 ws.connect(authToken, id, playerColor);
-                return "Joined game " + currentGameData.gameName() + " as " + params[1];
+                return "Joining game " + currentGameData.gameName() + " as " + params[1];
             } catch (Exception e) {
                 if (e.getMessage().contains("403")) {
                     throw new Exception("Color has already been taken");
@@ -253,7 +253,7 @@ public class ChessClient {
                     move = new ChessMove(from, to, null);
                 }
                 ws.makeMove(authToken, currentGameData.gameID(), move);
-                return "Made move " + params[0] + " to " + params[1];
+                return "Making move " + params[0] + " to " + params[1];
             } catch (Exception e) {
                 throw new Exception("Invalid move");
             }

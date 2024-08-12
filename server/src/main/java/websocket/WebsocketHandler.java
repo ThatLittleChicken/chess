@@ -1,6 +1,7 @@
 package websocket;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
@@ -93,7 +94,8 @@ public class WebsocketHandler {
             checkTurn(game, authData.username());
             game.game().makeMove(command.getMove());
             Server.gameService.updateGame(command.getGameID(), game);
-            NotificationMessage nm = new NotificationMessage("Player " + authData.username() + " has made a move");
+            NotificationMessage nm =
+                    new NotificationMessage("Player " + authData.username() + " has made a move " + formatMove(command.getMove()));
             connectionManager.broadcast(session, command.getGameID(), nm);
             LoadGameMessage lgm = new LoadGameMessage();
             connectionManager.broadcast(null, command.getGameID(), lgm);
@@ -155,5 +157,10 @@ public class WebsocketHandler {
                          new NotificationMessage(gameData.blackUsername() + " is in check"));
              }
          }
+    }
+
+    private String formatMove(ChessMove move) {
+        return String.format("%s%s to %s%s", (char) (move.getStartPosition().getColumn() + 96), move.getStartPosition().getRow(),
+                (char) (move.getEndPosition().getColumn() + 96), move.getEndPosition().getRow());
     }
 }
