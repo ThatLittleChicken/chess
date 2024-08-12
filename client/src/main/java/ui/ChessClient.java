@@ -17,6 +17,7 @@ import ui.websocket.WebSocketFacade;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class ChessClient {
     private final ServerFacade serverFacade;
@@ -97,6 +98,8 @@ public class ChessClient {
                     EscapeSequences.RESET_TEXT_COLOR + " - the game\n" +
                     EscapeSequences.SET_TEXT_COLOR_BLUE + "  leave" +
                     EscapeSequences.RESET_TEXT_COLOR + " - the game\n" +
+                    EscapeSequences.SET_TEXT_COLOR_BLUE + "  redraw" +
+                    EscapeSequences.RESET_TEXT_COLOR + " - the board\n" +
                     EscapeSequences.SET_TEXT_COLOR_BLUE + "  help" +
                     EscapeSequences.RESET_TEXT_COLOR + " - with possible commands";
         }
@@ -228,6 +231,12 @@ public class ChessClient {
         assertState(State.GAMEPLAY);
         if (playerColor == null) {
             throw new Exception("Cannot resign as observer");
+        }
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + "Are you sure you want to resign? (y/n)" + EscapeSequences.RESET_TEXT_COLOR);
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        if (!input.equalsIgnoreCase("y")) {
+            return EscapeSequences.SET_TEXT_COLOR_BLUE + "Resignation cancelled" + EscapeSequences.RESET_TEXT_COLOR;
         }
         ws.resign(authToken, currentGameData.gameID());
         return "Resigned game";
