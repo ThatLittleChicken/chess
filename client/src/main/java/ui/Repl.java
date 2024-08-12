@@ -42,15 +42,17 @@ public class Repl implements NotificationHandler {
     }
 
     public void notify(NotificationMessage notificationMessage) {
-        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + notificationMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
+        System.out.println("\n" + EscapeSequences.SET_TEXT_COLOR_BLUE + notificationMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
+        printPrompt();
     }
 
     public void notify(ErrorMessage errorMessage) {
-        System.out.println(EscapeSequences.SET_TEXT_COLOR_BLUE + errorMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
+        System.out.println("\n" + EscapeSequences.SET_TEXT_COLOR_GREEN + errorMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
+        printPrompt();
     }
 
     public void notify(LoadGameMessage loadGameMessage) {
-        System.out.println(client.redrawBoard());
+        System.out.println("\n" + client.redrawBoard());
+        printPrompt();
     }
-
 }

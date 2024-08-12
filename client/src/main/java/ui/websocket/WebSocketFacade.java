@@ -1,7 +1,9 @@
 package ui.websocket;
 
+import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
+import websocket.commands.JoinGameCommand;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
@@ -33,13 +35,14 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    if (message.toLowerCase().contains("error")) {
+                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                    if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
                         ErrorMessage errorMessage = new Gson().fromJson(message, ErrorMessage.class);
                         notificationHandler.notify(errorMessage);
-                    } else if (message.equals("game")) {
+                    } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
                         LoadGameMessage loadGameMessage = new LoadGameMessage();
                         notificationHandler.notify(loadGameMessage);
-                    } else {
+                    } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
                         NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
                         notificationHandler.notify(notificationMessage);
                     }
@@ -55,39 +58,27 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void connect(String authToken, int gameId) throws Exception {
+    public void connect(String authToken, int gameId, ChessGame.TeamColor color) throws Exception {
         try {
-            var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameId);
+            var command = new JoinGameCommand(authToken, gameId, color);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    public void makeMove(String authToken, int gameId, ChessMove move) throws Exception {
-        try {
-            var command = new MakeMoveCommand(authToken, gameId, move);
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+    public void makeMove(String authToken, int gameId, ChessMove move) {
+        var command = new MakeMoveCommand(authToken, gameId, move);
+        this.session.getAsyncRemote().sendText(new Gson().toJson(command));
     }
 
-    public void leave(String authToken, int gameId) throws Exception {
-        try {
-            var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameId);
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+    public void leave(String authToken, int gameId) {
+        var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameId);
+        this.session.getAsyncRemote().sendText(new Gson().toJson(command));
     }
 
-    public void resign(String authToken, int gameId) throws Exception {
-        try {
-            var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameId);
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+    public void resign(String authToken, int gameId) {
+        var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameId);
+        this.session.getAsyncRemote().sendText(new Gson().toJson(command));
     }
 }
