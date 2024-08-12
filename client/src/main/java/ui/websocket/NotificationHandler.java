@@ -7,9 +7,5 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 public interface NotificationHandler {
-    void notify(ErrorMessage errorMessage);
-
-    void notify(NotificationMessage notificationMessage);
-
-    void notify(LoadGameMessage loadGameMessage);
+    void notify(ServerMessage message);
 }

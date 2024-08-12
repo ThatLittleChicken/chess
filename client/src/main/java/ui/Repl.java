@@ -41,18 +41,22 @@ public class Repl implements NotificationHandler {
         System.out.print("\n" + EscapeSequences.RESET_TEXT_COLOR + "[" + client.getState() + "] >>> " + EscapeSequences.SET_TEXT_COLOR_GREEN);
     }
 
-    public void notify(NotificationMessage notificationMessage) {
-        System.out.println("\n" + EscapeSequences.SET_TEXT_COLOR_BLUE + notificationMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
-        printPrompt();
-    }
-
-    public void notify(ErrorMessage errorMessage) {
-        System.out.println("\n" + EscapeSequences.SET_TEXT_COLOR_GREEN + errorMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
-        printPrompt();
-    }
-
-    public void notify(LoadGameMessage loadGameMessage) {
-        System.out.println("\n" + client.redrawBoard());
-        printPrompt();
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()) {
+            case ERROR:
+                ErrorMessage errorMessage = (ErrorMessage) message;
+                System.out.println("\n" + EscapeSequences.SET_TEXT_COLOR_RED + errorMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
+                printPrompt();
+                break;
+            case LOAD_GAME:
+                System.out.println("\n" + client.redrawBoard());
+                printPrompt();
+                break;
+            case NOTIFICATION:
+                NotificationMessage notificationMessage = (NotificationMessage) message;
+                System.out.println("\n" + EscapeSequences.SET_TEXT_COLOR_BLUE + notificationMessage.getMessage() + EscapeSequences.RESET_TEXT_COLOR);
+                printPrompt();
+                break;
+        }
     }
 }
